@@ -17,28 +17,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Buscar especialidades em destaque
-        $specialties = Specialty::orderBy('name')->take(8)->get();
+       
         
-        // Buscar médicos em destaque (com melhores avaliações)
-        $doctors = Doctor::with(['user', 'specialties'])
-            ->withAvg('feedbacks', 'rating')
-            ->orderByDesc('feedbacks_avg_rating')
-            ->take(6)
-            ->get();
-        
-        // Buscar avaliações recentes positivas
-        $testimonials = Feedback::with(['patient.user', 'doctor.user'])
-            ->where('rating', '>=', 4)
-            ->where('anonymous', false)
-            ->latest()
-            ->take(5)
-            ->get();
-        
-        // Buscar informações da clínica principal
-        $clinic = Clinic::first();
-        
-        return view('home', compact('specialties', 'doctors', 'testimonials', 'clinic'));
+        return view('home');
     }
     
     /**
