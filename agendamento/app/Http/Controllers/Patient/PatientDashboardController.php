@@ -8,7 +8,7 @@ use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class DashboardController extends Controller
+class PatientDashboardController extends Controller
 {
     /**
      * Display the patient dashboard.

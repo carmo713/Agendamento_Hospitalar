@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Providers\RouteServiceProvider;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -28,7 +29,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Após autenticação, redireciona chamando o método personalizado
+        return $this->authenticated($request, Auth::user());
     }
 
     /**
@@ -44,4 +46,24 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+/**
+    * Método personalizado para determinar para onde redirecionar após login
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @param  mixed  $user
+ * @return \Illuminate\Http\RedirectResponse
+ */
+
+// Sobrescreva o método authenticated
+protected function authenticated(Request $request, $user)
+{
+    if ($user->roles()->where('name', 'admin')->exists()) {
+        return redirect()->route('admin.dashboard');
+    } elseif ($user->roles()->where('name', 'doctor')->exists()) {
+        return redirect()->route('doctor.dashboard');
+    }
+    
+    return redirect()->route('dashboard');
+}
+    
 }

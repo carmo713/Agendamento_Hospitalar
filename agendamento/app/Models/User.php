@@ -51,90 +51,78 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the roles associated with the user.
+     * Relationships
      */
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class, 'user_roles');
-    }
-
-    /**
-     * Get the doctor associated with the user.
-     */
+    
     public function doctor()
     {
         return $this->hasOne(Doctor::class);
     }
 
-    /**
-     * Get the patient associated with the user.
-     */
     public function patient()
     {
         return $this->hasOne(Patient::class);
     }
 
-    /**
-     * Get the notifications for the user.
-     */
     public function notifications()
     {
         return $this->hasMany(Notification::class);
     }
 
-    /**
-     * Get sent messages.
-     */
     public function sentMessages()
     {
         return $this->hasMany(Message::class, 'sender_id');
     }
 
-    /**
-     * Get received messages.
-     */
     public function receivedMessages()
     {
         return $this->hasMany(Message::class, 'receiver_id');
     }
 
-    /**
-     * Check if user has a specific role.
-     */
-    public function hasRole($roleName)
+    public function roles()
     {
-        return $this->roles()->where('name', $roleName)->exists();
+        return $this->belongsToMany(Roles::class, 'user_roles');
+    }
+
+    public function auditLogs()
+    {
+        return $this->hasMany(AuditLog::class);
     }
 
     /**
-     * Check if the user is a doctor.
+     * Role Checks
      */
+    
+    public function hasRole($roles)
+    {
+        if (is_string($roles)) {
+            return $this->roles()->where('name', $roles)->exists();
+        }
+
+        return $roles->intersect($this->roles)->isNotEmpty();
+    }
+
     public function isDoctor()
     {
-        return $this->hasRole('doctor');
+        return $this->hasRole('doctor') || $this->doctor()->exists();
     }
 
-    /**
-     * Check if the user is a patient.
-     */
     public function isPatient()
     {
-        return $this->hasRole('patient');
+        return $this->hasRole('patient') || $this->patient()->exists();
     }
 
-    /**
-     * Check if the user is an admin.
-     */
     public function isAdmin()
     {
         return $this->hasRole('admin');
     }
 
     /**
-     * Get the audit logs associated with the user.
+     * Helper Methods
      */
-    public function auditLogs()
+    
+    public function getPhotoUrlAttribute()
     {
-        return $this->hasMany(AuditLog::class);
+        return $this->photo ? asset('storage/'.$this->photo) : asset('images/default-avatar.png');
     }
 }

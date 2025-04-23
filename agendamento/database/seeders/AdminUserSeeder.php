@@ -14,7 +14,7 @@ class AdminUserSeeder extends Seeder
         // Criar usuário admin
         $adminId = DB::table('users')->insertGetId([
             'name' => 'Admin',
-            'email' => 'admin@example.com',
+            'email' => 'admin3@example.com',
             'password' => Hash::make('password'),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),

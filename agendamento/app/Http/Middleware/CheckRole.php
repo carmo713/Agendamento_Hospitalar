@@ -1,5 +1,5 @@
 <?php
-
+// Em app/Http/Middleware/CheckRole.php
 namespace App\Http\Middleware;
 
 use Closure;
@@ -10,7 +10,7 @@ class CheckRole
     public function handle(Request $request, Closure $next, $role)
     {
         if (!$request->user() || !$request->user()->hasRole($role)) {
-            return redirect()->route('home')->with('error', 'Você não tem permissão para acessar esta área.');
+            return redirect()->route('dashboard'); // Redireciona para um local padrão
         }
 
         return $next($request);
