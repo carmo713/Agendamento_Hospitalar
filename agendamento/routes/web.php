@@ -6,6 +6,7 @@ use App\Http\Controllers\Doctor\DoctorDashboardController;
 use App\Http\Controllers\Patient\PatientDashboardController;
 use Illuminate\Support\Facades\Route;
 
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -20,19 +21,25 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Em routes/web.php
+// Rotas autenticadas
 Route::middleware(['auth'])->group(function () {
-    Route::get('/patient/dashboard', [PatientDashboardController::class, 'index'])
-        ->middleware('role:patient')
-        ->name('patient.dashboard');
-        
-    Route::get('/doctor/dashboard', [DoctorDashboardController::class, 'index'])
-        ->middleware('role:doctor')
-        ->name('doctor.dashboard');
-        
-    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
-        ->middleware('role:admin')
-        ->name('admin.dashboard');
-}); 
+    // Grupo para admin
+    Route::middleware(['role:admin'])->group(function () {
+        Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
+            ->name('admin.dashboard'); // Nome da rota deve corresponder
+    });
+    
+    // Grupo para doctor
+    Route::middleware(['role:doctor'])->group(function () {
+        Route::get('/doctor/dashboard', [DoctorDashboardController::class, 'index'])
+            ->name('doctor.dashboard');
+    });
+    
+    // Grupo para patient
+    Route::middleware(['role:patient'])->group(function () {
+        Route::get('/patient/dashboard', [PatientDashboardController::class, 'index'])
+            ->name('patient.dashboard');
+    });
+});
 
 require __DIR__.'/auth.php';

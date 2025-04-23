@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\Role;
 
 class RoleSeeder extends Seeder
 {
@@ -16,6 +17,9 @@ class RoleSeeder extends Seeder
             ['name' => 'patient', 'description' => 'Paciente', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
         ];
 
-        DB::table('roles')->insert($roles);
+        
+      foreach ($roles as $role) {
+        Role::create($role);
+    }
     }
 }

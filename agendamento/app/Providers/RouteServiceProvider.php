@@ -30,4 +30,16 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/api.php'));
         });
     }
+    public function redirectTo()
+{
+    if (auth()->user()->hasRole('admin')) {
+        return '/admin/dashboard';
+    } elseif (auth()->user()->hasRole('doctor')) {
+        return '/doctor/dashboard';
+    } elseif (auth()->user()->hasRole('patient')) {
+        return '/patient/dashboard';
+    }
+    
+    return '/home';
+}
 }

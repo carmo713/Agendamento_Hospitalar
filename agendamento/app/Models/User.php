@@ -6,16 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Doctor;
+use App\Models\Patient;
+use App\Models\Notification;
+use App\Models\Message;
+use App\Models\Role;
+use App\Models\AuditLog;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -28,21 +29,11 @@ class User extends Authenticatable
         'status',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
@@ -50,10 +41,9 @@ class User extends Authenticatable
         'last_login_at' => 'datetime',
     ];
 
-    /**
-     * Relationships
-     */
-    
+    protected $appends = ['photo_url'];
+
+    // Relationships
     public function doctor()
     {
         return $this->hasOne(Doctor::class);
@@ -79,9 +69,9 @@ class User extends Authenticatable
         return $this->hasMany(Message::class, 'receiver_id');
     }
 
-    public function roles()
+    public function role()
     {
-        return $this->belongsToMany(Roles::class, 'user_roles');
+        return $this->belongsToMany(Role::class, 'user_role', 'user_id', 'role_id');
     }
 
     public function auditLogs()
@@ -89,40 +79,34 @@ class User extends Authenticatable
         return $this->hasMany(AuditLog::class);
     }
 
-    /**
-     * Role Checks
-     */
-    
-    public function hasRole($roles)
+    // Role Checks
+    public function roles()
     {
-        if (is_string($roles)) {
-            return $this->roles()->where('name', $roles)->exists();
+        return $this->belongsToMany(Role::class);
+    }
+    
+    public function hasRole($role)
+    {
+        if (is_string($role)) {
+            return $this->roles->contains('name', $role);
         }
-
-        return $roles->intersect($this->roles)->isNotEmpty();
-    }
-
-    public function isDoctor()
-    {
-        return $this->hasRole('doctor') || $this->doctor()->exists();
-    }
-
-    public function isPatient()
-    {
-        return $this->hasRole('patient') || $this->patient()->exists();
-    }
-
-    public function isAdmin()
-    {
-        return $this->hasRole('admin');
-    }
-
-    /**
-     * Helper Methods
-     */
     
-    public function getPhotoUrlAttribute()
-    {
-        return $this->photo ? asset('storage/'.$this->photo) : asset('images/default-avatar.png');
+        return !! $role->intersect($this->roles)->count();
     }
+    public function hasAnyRole($roles)
+{
+    if (is_array($roles)) {
+        foreach ($roles as $role) {
+            if ($this->hasRole($role)) {
+                return true;
+            }
+        }
+    } else {
+        if ($this->hasRole($roles)) {
+            return true;
+        }
+    }
+    
+    return false;
+}
 }

@@ -23,7 +23,7 @@ class AdminUserSeeder extends Seeder
         // Associar ao papel de admin
         $adminRoleId = DB::table('roles')->where('name', 'admin')->value('id');
         
-        DB::table('user_roles')->insert([
+        DB::table('user_role')->insert([
             'user_id' => $adminId,
             'role_id' => $adminRoleId,
             'created_at' => Carbon::now(),

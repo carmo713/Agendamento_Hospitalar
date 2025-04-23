@@ -55,15 +55,17 @@ class AuthenticatedSessionController extends Controller
  */
 
 // Sobrescreva o método authenticated
-protected function authenticated(Request $request, $user)
+protected function authenticated($request, $user)
 {
-    if ($user->roles()->where('name', 'admin')->exists()) {
+    if ($user->hasRole('admin')) {
         return redirect()->route('admin.dashboard');
-    } elseif ($user->roles()->where('name', 'doctor')->exists()) {
+    } elseif ($user->hasRole('doctor')) {
         return redirect()->route('doctor.dashboard');
+    } elseif ($user->hasRole('patient')) {
+        return redirect()->route('patient.dashboard');
     }
-    
-    return redirect()->route('dashboard');
+
+    return redirect(RouteServiceProvider::HOME);
 }
     
 }
