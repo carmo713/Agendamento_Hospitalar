@@ -8,7 +8,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use App\Providers\RouteServiceProvider;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -29,10 +28,20 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Após autenticação, redireciona chamando o método personalizado
-        return $this->authenticated($request, Auth::user());
-    }
+        // Redirection logic based on roles
+        $user = Auth::user();
 
+        if ($user->hasRole('admin')) {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->hasRole('doctor')) {
+            return redirect()->route('doctor.dashboard');
+        } elseif ($user->hasRole('patient')) {
+            return redirect()->route('patient.dashboard');
+        }
+
+        // Default redirection if no role matches
+        return redirect()->route('dashboard');
+    }
     /**
      * Destroy an authenticated session.
      */
@@ -46,26 +55,5 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
-/**
-    * Método personalizado para determinar para onde redirecionar após login
- *
- * @param  \Illuminate\Http\Request  $request
- * @param  mixed  $user
- * @return \Illuminate\Http\RedirectResponse
- */
-
-// Sobrescreva o método authenticated
-protected function authenticated($request, $user)
-{
-    if ($user->hasRole('admin')) {
-        return redirect()->route('admin.dashboard');
-    } elseif ($user->hasRole('doctor')) {
-        return redirect()->route('doctor.dashboard');
-    } elseif ($user->hasRole('patient')) {
-        return redirect()->route('patient.dashboard');
-    }
-
-    return redirect(RouteServiceProvider::HOME);
-}
     
 }

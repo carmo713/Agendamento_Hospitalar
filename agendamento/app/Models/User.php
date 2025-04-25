@@ -6,16 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Doctor;
-use App\Models\Patient;
-use App\Models\Notification;
-use App\Models\Message;
-use App\Models\Role;
-use App\Models\AuditLog;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     protected $fillable = [
         'name',
@@ -69,44 +64,8 @@ class User extends Authenticatable
         return $this->hasMany(Message::class, 'receiver_id');
     }
 
-    public function role()
-    {
-        return $this->belongsToMany(Role::class, 'user_role', 'user_id', 'role_id');
-    }
-
     public function auditLogs()
     {
         return $this->hasMany(AuditLog::class);
     }
-
-    // Role Checks
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class);
-    }
-    
-    public function hasRole($role)
-    {
-        if (is_string($role)) {
-            return $this->roles->contains('name', $role);
-        }
-    
-        return !! $role->intersect($this->roles)->count();
-    }
-    public function hasAnyRole($roles)
-{
-    if (is_array($roles)) {
-        foreach ($roles as $role) {
-            if ($this->hasRole($role)) {
-                return true;
-            }
-        }
-    } else {
-        if ($this->hasRole($roles)) {
-            return true;
-        }
-    }
-    
-    return false;
-}
 }

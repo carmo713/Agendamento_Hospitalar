@@ -1,11 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\Doctor\DoctorDashboardController;
-use App\Http\Controllers\Patient\PatientDashboardController;
 use Illuminate\Support\Facades\Route;
-
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,25 +17,22 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Rotas autenticadas
-Route::middleware(['auth'])->group(function () {
-    // Grupo para admin
-    Route::middleware(['role:admin'])->group(function () {
-        Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
-            ->name('admin.dashboard'); // Nome da rota deve corresponder
-    });
-    
-    // Grupo para doctor
-    Route::middleware(['role:doctor'])->group(function () {
-        Route::get('/doctor/dashboard', [DoctorDashboardController::class, 'index'])
-            ->name('doctor.dashboard');
-    });
-    
-    // Grupo para patient
-    Route::middleware(['role:patient'])->group(function () {
-        Route::get('/patient/dashboard', [PatientDashboardController::class, 'index'])
-            ->name('patient.dashboard');
-    });
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
 });
+
+Route::middleware(['auth', 'role:doctor'])->group(function () {
+    Route::get('/doctor/dashboard', function () {
+        return view('doctor.dashboard');
+    })->name('doctor.dashboard');
+});
+
+Route::middleware(['auth', 'role:patient'])->group(function () {
+    Route::get('/patient/dashboard', function () {
+        return view('patient.dashboard');
+    })->name('patient.dashboard');
+}); 
 
 require __DIR__.'/auth.php';

@@ -11,8 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
-use App\Models\Role;
-use App\Models\Patient;
+
 class RegisteredUserController extends Controller
 {
     /**
@@ -41,6 +40,8 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        $user->assignRole('patient');
 
         event(new Registered($user));
 

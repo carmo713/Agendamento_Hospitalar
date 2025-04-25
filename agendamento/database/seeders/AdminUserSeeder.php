@@ -6,28 +6,18 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use App\Models\User;
 
 class AdminUserSeeder extends Seeder
 {
     public function run()
     {
         // Criar usuário admin
-        $adminId = DB::table('users')->insertGetId([
+        $admin = User::create([
             'name' => 'Admin',
             'email' => 'admin3@example.com',
-            'password' => Hash::make('password'),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'password' => bcrypt('password'),
         ]);
-
-        // Associar ao papel de admin
-        $adminRoleId = DB::table('roles')->where('name', 'admin')->value('id');
-        
-        DB::table('user_role')->insert([
-            'user_id' => $adminId,
-            'role_id' => $adminRoleId,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ]);
+        $admin->assignRole('patient');
     }
 }
