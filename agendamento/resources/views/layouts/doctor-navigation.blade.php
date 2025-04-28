@@ -6,7 +6,7 @@
             <div class="flex items-center">
                 <!-- Logo -->
                 <div class="shrink-0">
-                    <a href="{{ route('admin.dashboard') }}">
+                    <a href="{{ route('doctor.dashboard') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
                     </a>
                 </div>
@@ -19,7 +19,6 @@
 
                     <!-- Dropdown Menus -->
                     @foreach ([
-                        'Usuários' => [['Listar Usuários', '#'], ['Novo Usuário', '#']],
                         'Médicos' => [['Listar Médicos', '#'], ['Novo Médico', '#']],
                         'Pacientes' => [['Listar Pacientes', '#'], ['Novo Paciente', '#']],
                         'Especialidades' => [['Listar Especialidades', '#'], ['Nova Especialidade', '#']],

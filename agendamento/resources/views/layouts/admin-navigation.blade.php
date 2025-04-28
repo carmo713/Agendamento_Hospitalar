@@ -21,8 +21,8 @@
                     @foreach ([
                         'Médicos' => [['Listar Médicos', '#'], ['Novo Médico', '#']],
                         'Pacientes' => [['Listar Pacientes', '#'], ['Novo Paciente', '#']],
-                        'Especialidades' => [['Listar Especialidades', '#'], ['Nova Especialidade', '#']],
-                        'Clínicas & Salas' => [['Listar Clínicas', '#'], ['Nova Clínica', '#'], ['Listar Salas', '#'], ['Nova Sala', '#']],
+                        'Especialidades' => [['Listar Especialidades', route('admin.specialties.index')], ['Nova Especialidade', route('admin.specialties.create')], ],
+                        'Clínicas & Salas' => [['Listar Clínicas', ''], ['Nova Clínica', '#'], ['Listar Salas', '#'], ['Nova Sala', '#']],
                         'Agendamentos' => [['Listar Agendamentos', '#'], ['Novo Agendamento', '#']],
                         'Relatórios' => [['Relatório de Consultas', '#'], ['Desempenho dos Médicos', '#'], ['Perfil dos Pacientes', '#'], ['Relatório Financeiro', '#'], ['Avaliações e Satisfação', '#']],
                     ] as $menu => $items)

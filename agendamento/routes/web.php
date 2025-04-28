@@ -35,4 +35,15 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
     })->name('patient.dashboard');
 }); 
 
+// Admin Routes - Specialty Management
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    route::get('/admin/specialties', [\App\Http\Controllers\Admin\SpecialtyController::class, 'index'])->name('admin.specialties.index');
+    route::get('/admin/specialties/create', [\App\Http\Controllers\Admin\SpecialtyController::class, 'create'])->name('admin.specialties.create');
+    route::post('/admin/specialties', [\App\Http\Controllers\Admin\SpecialtyController::class, 'store'])->name('admin.specialties.store');
+    route::get('/admin/specialties/{specialty}/edit', [\App\Http\Controllers\Admin\SpecialtyController::class, 'edit'])->name('admin.specialties.edit');
+    route::put('/admin/specialties/{specialty}', [\App\Http\Controllers\Admin\SpecialtyController::class, 'update'])->name('admin.specialties.update');
+    route::delete('/admin/specialties/{specialty}', [\App\Http\Controllers\Admin\SpecialtyController::class, 'destroy'])->name('admin.specialties.destroy');
+});
+
 require __DIR__.'/auth.php';
