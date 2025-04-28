@@ -19,10 +19,10 @@
 
                     <!-- Dropdown Menus -->
                     @foreach ([
-                        'Médicos' => [['Listar Médicos', '#'], ['Novo Médico', '#']],
+                        'Médicos' => [['Listar Médicos', route('admin.doctors.index')], ['Novo Médico', route('admin.doctors.create')]],
                         'Pacientes' => [['Listar Pacientes', '#'], ['Novo Paciente', '#']],
-                        'Especialidades' => [['Listar Especialidades', route('admin.specialties.index')], ['Nova Especialidade', route('admin.specialties.create')], ],
-                        'Clínicas & Salas' => [['Listar Clínicas', ''], ['Nova Clínica', '#'], ['Listar Salas', '#'], ['Nova Sala', '#']],
+                        'Especialidades' => [['Listar Especialidades', route('admin.specialties.index')], ['Nova Especialidade', route('admin.specialties.create')]],
+                        'Clínicas & Salas' => [['Listar Clínicas', route('admin.clinics.index')], ['Nova Clínica', route('admin.clinics.create')], ['Listar Salas', route('admin.rooms.index')], ['Nova Sala', route('admin.rooms.create')]],
                         'Agendamentos' => [['Listar Agendamentos', '#'], ['Novo Agendamento', '#']],
                         'Relatórios' => [['Relatório de Consultas', '#'], ['Desempenho dos Médicos', '#'], ['Perfil dos Pacientes', '#'], ['Relatório Financeiro', '#'], ['Avaliações e Satisfação', '#']],
                     ] as $menu => $items)

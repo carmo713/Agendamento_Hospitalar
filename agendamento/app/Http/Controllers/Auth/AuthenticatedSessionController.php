@@ -37,10 +37,10 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('doctor.dashboard');
         } elseif ($user->hasRole('patient')) {
             return redirect()->route('patient.dashboard');
-        }
-
+        }   
+        return redirect()->intended('/');  // Default redirection if no role matches    
         // Default redirection if no role matches
-        return redirect()->route('dashboard');
+            
     }
     /**
      * Destroy an authenticated session.
