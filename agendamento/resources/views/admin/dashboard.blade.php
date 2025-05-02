@@ -1,3 +1,4 @@
+<!-- filepath: /home/carmo/Documentos/trabalhofinal_agendamentohospitalar/agendamento/resources/views/admin/dashboard.blade.php -->
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -19,7 +20,7 @@
                                 </svg>
                             </div>
                             <div class="ml-5">
-                                <h4 class="text-2xl font-semibold">0</h4>
+                                <h4 class="text-2xl font-semibold">{{ $stats['total_appointments'] ?? 0 }}</h4>
                                 <div class="text-sm text-gray-500">Total de Consultas</div>
                             </div>
                         </div>
@@ -36,7 +37,7 @@
                                 </svg>
                             </div>
                             <div class="ml-5">
-                                <h4 class="text-2xl font-semibold">0</h4>
+                                <h4 class="text-2xl font-semibold">{{ $stats['today_appointments'] ?? 0 }}</h4>
                                 <div class="text-sm text-gray-500">Consultas Hoje</div>
                             </div>
                         </div>
@@ -53,7 +54,7 @@
                                 </svg>
                             </div>
                             <div class="ml-5">
-                                <h4 class="text-2xl font-semibold">0</h4>
+                                <h4 class="text-2xl font-semibold">{{ $stats['total_doctors'] ?? 0 }}</h4>
                                 <div class="text-sm text-gray-500">Total de Médicos</div>
                             </div>
                         </div>
@@ -70,7 +71,7 @@
                                 </svg>
                             </div>
                             <div class="ml-5">
-                                <h4 class="text-2xl font-semibold">0</h4>
+                                <h4 class="text-2xl font-semibold">{{ $stats['total_patients'] ?? 0 }}</h4>
                                 <div class="text-sm text-gray-500">Total de Pacientes</div>
                             </div>
                         </div>
@@ -104,17 +105,48 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800">
-                                    <tr>
-                                        <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">
-                                            Nenhuma consulta recente encontrada
-                                        </td>
-                                    </tr>
+                                    @forelse ($recentAppointments as $appointment)
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                                    {{ $appointment->patient->user->name ?? 'N/A' }}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                                    {{ $appointment->doctor->user->name ?? 'N/A' }}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-500 dark:text-gray-400">
+                                                    {{ $appointment->start_time ? $appointment->start_time->format('d/m/Y H:i') : 'N/A' }}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                    @if($appointment->status == 'scheduled') bg-yellow-100 text-yellow-800 
+                                                    @elseif($appointment->status == 'confirmed') bg-green-100 text-green-800
+                                                    @elseif($appointment->status == 'completed') bg-blue-100 text-blue-800
+                                                    @elseif($appointment->status == 'canceled') bg-red-100 text-red-800
+                                                    @elseif($appointment->status == 'no_show') bg-gray-100 text-gray-800
+                                                    @endif">
+                                                    {{ ucfirst($appointment->status ?? 'N/A') }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">
+                                                Nenhuma consulta recente encontrada
+                                            </td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
                         
                         <div class="mt-4">
-                            <a href="#" class="text-blue-600 hover:underline">Ver todas consultas &rarr;</a>
+                            <a href="{{ route('admin.appointments.index') }}" class="text-blue-600 hover:underline">Ver todas consultas &rarr;</a>
                         </div>
                     </div>
                 </div>
@@ -138,22 +170,144 @@
                                             Data/Hora
                                         </th>
                                         <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                                            Clínica
+                                            Especialidade
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800">
-                                    <tr>
-                                        <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">
-                                            Nenhuma consulta agendada
-                                        </td>
-                                    </tr>
+                                    @forelse ($upcomingAppointments as $appointment)
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                                    {{ $appointment->patient->user->name ?? 'N/A' }}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                                    {{ $appointment->doctor->user->name ?? 'N/A' }}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-500 dark:text-gray-400">
+                                                    {{ $appointment->start_time ? $appointment->start_time->format('d/m/Y H:i') : 'N/A' }}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-500 dark:text-gray-400">
+                                                    {{ $appointment->specialty->name ?? 'N/A' }}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">
+                                                Nenhuma consulta agendada
+                                            </td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
                         
                         <div class="mt-4">
-                            <a href="#" class="text-blue-600 hover:underline">Ver todos agendamentos &rarr;</a>
+                            <a href="{{ route('admin.appointments.index') }}" class="text-blue-600 hover:underline">Ver todos agendamentos &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Médicos mais requisitados e especialidades -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Médicos mais requisitados -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900 dark:text-gray-100">
+                        <h3 class="text-lg font-semibold mb-4">Médicos Mais Requisitados</h3>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr>
+                                        <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                            Médico
+                                        </th>
+                                        <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                            Total de Consultas
+                                        </th>
+                                        <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                            Ações
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800">
+                                    @forelse ($topDoctors as $doctor)
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                                    {{ $doctor->user->name ?? 'N/A' }}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-500 dark:text-gray-400">
+                                                    {{ $doctor->appointments_count ?? 0 }}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 dark:text-blue-400">
+                                                <a href="{{ route('admin.doctors.show', $doctor->id) }}" class="hover:underline">Ver Detalhes</a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500">
+                                                Nenhum médico encontrado
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Especialidades mais procuradas -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900 dark:text-gray-100">
+                        <h3 class="text-lg font-semibold mb-4">Especialidades Mais Procuradas</h3>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr>
+                                        <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                            Especialidade
+                                        </th>
+                                        <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                            Total de Consultas
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800">
+                                    @forelse ($topSpecialties as $specialty)
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                                    {{ $specialty->name ?? 'N/A' }}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-500 dark:text-gray-400">
+                                                    {{ $specialty->appointments_count ?? 0 }}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="2" class="px-6 py-4 text-center text-sm text-gray-500">
+                                                Nenhuma especialidade encontrada
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

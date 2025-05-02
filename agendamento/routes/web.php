@@ -11,7 +11,7 @@ Route::get('/dashboard', function () {
     if (auth()->user()->hasRole('admin')) {
         return redirect()->route('admin.dashboard');
     } elseif (auth()->user()->hasRole('doctor')) {
-        return redirect()->route('doctor.dashboard');
+        return redirect()->route('doctors.dashboard'); // Alterado de doctors.dashboard para doctor.dashboard
     } elseif (auth()->user()->hasRole('patient')) {
         return redirect()->route('patient.dashboard');
     }
@@ -25,20 +25,16 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/admin/dashboard', [\App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('admin.dashboard');
 });
 
 Route::middleware(['auth', 'role:doctor'])->group(function () {
-    Route::get('/doctor/dashboard', function () {
-        return view('doctor.dashboard');
-    })->name('doctor.dashboard');
+    route::get('/doctor/dashboard', [\App\Http\Controllers\Doctor\DoctorDashboardController::class, 'index'])->name('doctor.dashboard');    
 });
 
 Route::middleware(['auth', 'role:patient'])->group(function () {
     Route::get('/patient/dashboard', function () {
-        return view('patient.dashboard');
+        return view('patients.dashboard');
     })->name('patient.dashboard');
 }); 
 
@@ -84,6 +80,29 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/doctors/{doctor}/edit', [\App\Http\Controllers\Admin\DoctorController::class, 'edit'])->name('admin.doctors.edit');
     Route::put('/admin/doctors/{doctor}', [\App\Http\Controllers\Admin\DoctorController::class, 'update'])->name('admin.doctors.update');
     Route::delete('/admin/doctors/{doctor}', [\App\Http\Controllers\Admin\DoctorController::class, 'destroy'])->name('admin.doctors.destroy');
+});
+
+// Admin Routes - Patient Management
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/patients', [\App\Http\Controllers\Admin\PatientController::class, 'index'])->name('admin.patients.index');
+    Route::get('/admin/patients/create', [\App\Http\Controllers\Admin\PatientController::class, 'create'])->name('admin.patients.create');
+    Route::post('/admin/patients', [\App\Http\Controllers\Admin\PatientController::class, 'store'])->name('admin.patients.store');
+    Route::get('/admin/patients/{patient}', [\App\Http\Controllers\Admin\PatientController::class, 'show'])->name('admin.patients.show');
+    Route::get('/admin/patients/{patient}/edit', [\App\Http\Controllers\Admin\PatientController::class, 'edit'])->name('admin.patients.edit');
+    Route::put('/admin/patients/{patient}', [\App\Http\Controllers\Admin\PatientController::class, 'update'])->name('admin.patients.update');
+    Route::delete('/admin/patients/{patient}', [\App\Http\Controllers\Admin\PatientController::class, 'destroy'])->name('admin.patients.destroy');
+});
+
+// Admin Routes - Appointment Management
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/appointments', [\App\Http\Controllers\Admin\AppointmentController::class, 'index'])->name('admin.appointments.index');
+    Route::get('/admin/appointments/create', [\App\Http\Controllers\Admin\AppointmentController::class, 'create'])->name('admin.appointments.create');
+    Route::post('/admin/appointments', [\App\Http\Controllers\Admin\AppointmentController::class, 'store'])->name('admin.appointments.store');
+    Route::get('/admin/appointments/{appointment}', [\App\Http\Controllers\Admin\AppointmentController::class, 'show'])->name('admin.appointments.show');
+    Route::get('/admin/appointments/{appointment}/edit', [\App\Http\Controllers\Admin\AppointmentController::class, 'edit'])->name('admin.appointments.edit');
+    Route::put('/admin/appointments/{appointment}', [\App\Http\Controllers\Admin\AppointmentController::class, 'update'])->name('admin.appointments.update');
+    Route::delete('/admin/appointments/{appointment}', [\App\Http\Controllers\Admin\AppointmentController::class, 'destroy'])->name('admin.appointments.destroy');
+    Route::patch('/admin/appointments/{appointment}/status', [\App\Http\Controllers\Admin\AppointmentController::class, 'updateStatus'])->name('admin.appointments.update-status');
 });
 
 require __DIR__.'/auth.php';

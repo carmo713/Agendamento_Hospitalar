@@ -81,7 +81,11 @@ class Doctor extends Model
      * Get the doctor's average rating.
      */
     public function getAverageRatingAttribute()
-    {
+{
+    try {
         return $this->feedbacks()->avg('rating') ?: 0;
+    } catch (\Exception $e) {
+        return 0;
     }
+}
 }

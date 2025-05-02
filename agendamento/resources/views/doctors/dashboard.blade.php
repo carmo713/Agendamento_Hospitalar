@@ -16,17 +16,12 @@
                             <img src="path/to/static/photo.jpg" alt="Foto do Médico">
                         </div>
                         <div class="md:ml-6 mt-4 md:mt-0">
-                            <h3 class="text-2xl font-semibold text-gray-800 dark:text-white">Dr. Nome Estático</h3>
-                            <p class="text-gray-600 dark:text-gray-300">Especialidade Estática</p>
+                            <h3 class="text-2xl font-semibold text-gray-800 dark:text-white">Dr. {{ $doctorData['name']}}</h3>
+                            <p class="text-gray-600 dark:text-gray-300">{{$doctorData['specialties']}}</p>
                             <p class="text-sm text-gray-500 dark:text-gray-400">CRM: 123456</p>
                         </div>
                         <div class="ml-auto mt-4 md:mt-0 text-right">
-                            <div class="text-sm text-gray-600 dark:text-gray-300">
-                                <span class="font-semibold">Data:</span> 01/01/2023
-                            </div>
-                            <div class="text-sm text-gray-600 dark:text-gray-300">
-                                <span class="font-semibold">Hora:</span> 12:00
-                            </div>
+                            
                         </div>
                     </div>
                 </div>

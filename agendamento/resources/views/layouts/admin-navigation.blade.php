@@ -20,10 +20,10 @@
                     <!-- Dropdown Menus -->
                     @foreach ([
                         'Médicos' => [['Listar Médicos', route('admin.doctors.index')], ['Novo Médico', route('admin.doctors.create')]],
-                        'Pacientes' => [['Listar Pacientes', '#'], ['Novo Paciente', '#']],
+                        'Pacientes' => [['Listar Pacientes', route('admin.patients.index')], ['Novo Paciente', route('admin.patients.create')]],
                         'Especialidades' => [['Listar Especialidades', route('admin.specialties.index')], ['Nova Especialidade', route('admin.specialties.create')]],
                         'Clínicas & Salas' => [['Listar Clínicas', route('admin.clinics.index')], ['Nova Clínica', route('admin.clinics.create')], ['Listar Salas', route('admin.rooms.index')], ['Nova Sala', route('admin.rooms.create')]],
-                        'Agendamentos' => [['Listar Agendamentos', '#'], ['Novo Agendamento', '#']],
+                        'Agendamentos' => [['Listar Agendamentos', route('admin.appointments.index')], ['Novo Agendamento', route('admin.appointments.create')]],
                         'Relatórios' => [['Relatório de Consultas', '#'], ['Desempenho dos Médicos', '#'], ['Perfil dos Pacientes', '#'], ['Relatório Financeiro', '#'], ['Avaliações e Satisfação', '#']],
                     ] as $menu => $items)
                         <div class="relative" x-data="{ open: false }">
