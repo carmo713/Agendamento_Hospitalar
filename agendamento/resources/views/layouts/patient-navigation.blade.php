@@ -19,7 +19,7 @@
                     </x-nav-link>
                     
                     <!-- Agendamento -->
-                    <x-nav-link href="#" :active="false">
+                    <x-nav-link :href="route('patient.appointments.index')" :active="request()->routeIs('patient.appointments.index')">
                         {{ __('Agendar Consulta') }}
                     </x-nav-link>
                     

@@ -13,18 +13,38 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden sm:flex space-x-8 ms-10">
-                    <x-nav-link :href="route('doctor.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                    <x-nav-link :href="route('doctor.dashboard')" :active="request()->routeIs('doctor.dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
                     <!-- Dropdown Menus -->
                     @foreach ([
-                        'Médicos' => [['Listar Médicos', '#'], ['Novo Médico', '#']],
-                        'Pacientes' => [['Listar Pacientes', '#'], ['Novo Paciente', '#']],
-                        'Especialidades' => [['Listar Especialidades', '#'], ['Nova Especialidade', '#']],
-                        'Clínicas & Salas' => [['Listar Clínicas', '#'], ['Nova Clínica', '#'], ['Listar Salas', '#'], ['Nova Sala', '#']],
-                        'Agendamentos' => [['Listar Agendamentos', '#'], ['Novo Agendamento', '#']],
-                        'Relatórios' => [['Relatório de Consultas', '#'], ['Desempenho dos Médicos', '#'], ['Perfil dos Pacientes', '#'], ['Relatório Financeiro', '#'], ['Avaliações e Satisfação', '#']],
+                        'Agenda' => [
+                            ['Minha Agenda', '#'], 
+                            ['Configurar Horários', '#'],
+                            ['Folgas e Férias', '#']
+                        ],
+                        'Consultas' => [
+                            ['Todas Consultas', '#'], 
+                            ['Consultas de Hoje', '#'],
+                            ['Sala de Espera', '#']
+                        ],
+                        'Pacientes' => [
+                            ['Lista de Pacientes', '#']
+                        ],
+                        'Prontuários' => [
+                            ['Lista de Prontuários', '#'], 
+                            ['Novo Prontuário', '#']
+                        ],
+                        'Documentos' => [
+                            ['Receitas', '#'], 
+                            ['Atestados', '#'], 
+                            ['Solicitações de Exames', '#'],
+                            ['Resultados de Exames', '#']
+                        ],
+                        'Mensagens' => [
+                            ['Caixa de Entrada', '#']
+                        ],
                     ] as $menu => $items)
                         <div class="relative" x-data="{ open: false }">
                             <x-nav-link @click="open = !open" :active="false" class="cursor-pointer">
@@ -62,9 +82,17 @@
                         </button>
                     </x-slot>
 
-                    <x-slot name="content">
-                        <x-dropdown-link href="#">
-                            {{ __('Profile') }}
+                    <<x-slot name="content">
+                        <x-dropdown-link :href="'#'">
+                            {{ __('Perfil Profissional') }}
+                        </x-dropdown-link>
+                        
+                        <x-dropdown-link :href="'#'">
+                            {{ __('Senha e Segurança') }}
+                        </x-dropdown-link>
+                        
+                        <x-dropdown-link :href="'#'">
+                            {{ __('Notificações') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
@@ -74,7 +102,7 @@
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                                {{ __('Sair') }}
                             </x-dropdown-link>
                         </form> 
                     </x-slot>
@@ -89,6 +117,68 @@
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Responsive Navigation Menu -->
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('doctor.dashboard')" :active="request()->routeIs('doctor.dashboard')">
+                {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            
+            <x-responsive-nav-link :href="'#'" :active="false">
+                {{ __('Agenda') }}
+            </x-responsive-nav-link>
+            
+            <x-responsive-nav-link :href="'#'" :active="false">
+                {{ __('Consultas') }}
+            </x-responsive-nav-link>
+            
+            <x-responsive-nav-link :href="'#'" :active="false">
+                {{ __('Pacientes') }}
+            </x-responsive-nav-link>
+            
+            <x-responsive-nav-link :href="'#'" :active="false">
+                {{ __('Prontuários') }}
+            </x-responsive-nav-link>
+            
+            <x-responsive-nav-link :href="'#'" :active="false">
+                {{ __('Receitas') }}
+            </x-responsive-nav-link>
+            
+            <x-responsive-nav-link :href="'#'" :active="false">
+                {{ __('Mensagens') }}
+            </x-responsive-nav-link>
+        </div>
+
+        <!-- Responsive Settings Options -->
+        <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
+            <div class="px-4">
+                <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
+                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+            </div>
+
+            <div class="mt-3 space-y-1">
+                <x-responsive-nav-link :href="'#'">
+                    {{ __('Perfil Profissional') }}
+                </x-responsive-nav-link>
+                
+                <x-responsive-nav-link :href="'#'">
+                    {{ __('Senha e Segurança') }}
+                </x-responsive-nav-link>
+
+                <!-- Authentication -->
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+
+                    <x-responsive-nav-link :href="route('logout')"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        {{ __('Sair') }}
+                    </x-responsive-nav-link>
+                </form>
             </div>
         </div>
     </div>

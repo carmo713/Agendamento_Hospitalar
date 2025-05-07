@@ -16,4 +16,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('is-doctor', fn($user) => $user->isDoctor());
         Gate::define('is-patient', fn($user) => $user->isPatient());
     }
+    protected $policies = [
+        // ... 
+        \App\Models\Appointment::class => \App\Policies\AppointmentPolicy::class,
+    ];
 }

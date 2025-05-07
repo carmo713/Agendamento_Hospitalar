@@ -33,9 +33,7 @@ Route::middleware(['auth', 'role:doctor'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:patient'])->group(function () {
-    Route::get('/patient/dashboard', function () {
-        return view('patients.dashboard');
-    })->name('patient.dashboard');
+    route::get('/patient/dashboard', [\App\Http\Controllers\Patient\PatientDashboardController::class, 'index'])->name('patient.dashboard');
 }); 
 
 // Admin Routes - Specialty Management
@@ -104,5 +102,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/admin/appointments/{appointment}', [\App\Http\Controllers\Admin\AppointmentController::class, 'destroy'])->name('admin.appointments.destroy');
     Route::patch('/admin/appointments/{appointment}/status', [\App\Http\Controllers\Admin\AppointmentController::class, 'updateStatus'])->name('admin.appointments.update-status');
 });
+
+
 
 require __DIR__.'/auth.php';
