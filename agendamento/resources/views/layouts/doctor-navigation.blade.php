@@ -20,7 +20,7 @@
                     <!-- Dropdown Menus -->
                     @foreach ([
                         'Agenda' => [
-                            ['Minha Agenda', '#'], 
+                            ['Minha Agenda', route('doctor.schedule.index')], 
                             ['Configurar Horários', '#'],
                             ['Folgas e Férias', '#']
                         ],

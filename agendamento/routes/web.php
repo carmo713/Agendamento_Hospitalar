@@ -103,6 +103,29 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::patch('/admin/appointments/{appointment}/status', [\App\Http\Controllers\Admin\AppointmentController::class, 'updateStatus'])->name('admin.appointments.update-status');
 });
 
-
+// Rotas de Agenda do Médico
+Route::middleware(['auth', 'role:doctor'])->group(function () {
+    // Visualização da agenda
+    Route::get('/doctor/schedule', [App\Http\Controllers\Doctor\ScheduleController::class, 'index'])
+        ->name('doctor.schedule.index');
+    
+    // Configuração de horários
+    Route::get('/doctor/schedule/edit', [App\Http\Controllers\Doctor\ScheduleController::class, 'edit'])
+        ->name('doctor.schedule.edit');
+    Route::post('/doctor/schedule', [App\Http\Controllers\Doctor\ScheduleController::class, 'store'])
+        ->name('doctor.schedule.store');
+    
+    // Gerenciamento de exceções (folgas, modificações pontuais)
+    Route::get('/doctor/schedule/exceptions', [App\Http\Controllers\Doctor\ScheduleController::class, 'exceptions'])
+        ->name('doctor.schedule.exceptions');
+    Route::post('/doctor/schedule/exceptions', [App\Http\Controllers\Doctor\ScheduleController::class, 'storeException'])
+        ->name('doctor.schedule.store-exception');
+    Route::delete('/doctor/schedule/exceptions/{id}', [App\Http\Controllers\Doctor\ScheduleController::class, 'destroyException'])
+        ->name('doctor.schedule.destroy-exception');
+    
+    // API para dados do calendário
+    Route::get('/doctor/schedule/calendar-data', [App\Http\Controllers\Doctor\ScheduleController::class, 'getCalendarData'])
+        ->name('doctor.schedule.calendar-data');
+});
 
 require __DIR__.'/auth.php';
